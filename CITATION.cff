@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use Zorlo in your work, please cite it as below."
+title: "Zorlo: Streaming Mixture-of-Experts Inference on Low-Memory CPUs"
+type: software
+authors:
+  - family-names: Shahi
+    given-names: Haider Md. Faiyaz Hussain
+version: "0.1"
+date-released: 2026-11-22
+license: Apache-2.0
+url: "https://zorlo.stream"
+keywords:
+  - mixture-of-experts
+  - llm-inference
+  - cpu
+  - low-memory
+  - ssd-streaming

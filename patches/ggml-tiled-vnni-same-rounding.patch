@@ -1,0 +1,24 @@
+diff --git a/ggml/src/ggml-cpu/tiled/tiled-kernel.cpp b/ggml/src/ggml-cpu/tiled/tiled-kernel.cpp
+index 5819ac0..729ce53 100644
+--- a/ggml/src/ggml-cpu/tiled/tiled-kernel.cpp
++++ b/ggml/src/ggml-cpu/tiled/tiled-kernel.cpp
+@@ -189,10 +189,19 @@ static void tiled_run_micro_vnni_8x16(const tiled_tile_src0 & src0, const tiled_
+         __m512 result = _mm512_mul_ps(f1, _mm512_set1_ps(src0.d[d_off]));
+         if constexpr (HAS_MIN) {
+             __m512 f2 = _mm512_cvtepi32_ps(s2_acc[t]);
++            // same roundings as the AVX2 kernel, so results do not depend on which kernel the CPU gets
++#if defined(__FMA__)
+             result = _mm512_fnmadd_ps(_mm512_set1_ps(src0.dmin[d_off]), f2, result);
++#else
++            result = _mm512_sub_ps(result, _mm512_mul_ps(_mm512_set1_ps(src0.dmin[d_off]), f2));
++#endif
+         }
+         float * p = &buf[(i0 + t) * buf_stride + j0];
++#if defined(__FMA__)
++        _mm512_store_ps(p, _mm512_fmadd_ps(result, d1_vec, _mm512_load_ps(p)));
++#else
+         _mm512_store_ps(p, _mm512_add_ps(_mm512_load_ps(p), _mm512_mul_ps(result, d1_vec)));
++#endif
+     }
+ }
+ 

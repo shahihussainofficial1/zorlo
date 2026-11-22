@@ -1,0 +1,15 @@
+{
+  "format": "zorlo-catalog-1",
+  "models": [
+    {
+      "id": "qwen3-30b-a3b",
+      "name": "Qwen3 30B",
+      "repo": "Haidershahi1/qwen3-30b-a3b-zorlo",
+      "download_gb": 18.6,
+      "min_ram_gb": 8,
+      "recommended": true,
+      "min_zorlo": "0.1",
+      "about": "General chat, writing and coding. Works on 8 GB PCs."
+    }
+  ]
+}

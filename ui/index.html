@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zorlo</title>
+<meta name="zorlo-token" content="{{ZORLO_TOKEN}}">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F3F1EC'/%3E%3Crect x='6' y='6' width='17' height='17' rx='2' fill='%23141414'/%3E%3Crect x='18' y='18' width='9' height='9' rx='1.5' fill='%23E5480F'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/ui/app.css">
+<script src="/ui/app.js" defer></script>
+</head>
+<body>
+<div class="app" id="app">
+  <!-- chats -->
+  <aside class="side" id="side">
+    <div class="side__top">
+      <a class="brand" href="/"><span class="mark"></span>zorlo</a>
+      <button class="btn btn--ghost btn--block" id="new-chat" type="button">+ New chat <kbd>Ctrl K</kbd></button>
+      <input class="search" id="chat-search" type="search" placeholder="Search chats">
+    </div>
+    <nav class="chats" id="chats" aria-label="Chats"></nav>
+    <div class="side__bottom">
+      <a class="update" id="update" target="_blank" rel="noopener" hidden></a>
+      <button class="side__item" id="open-settings" type="button">Settings</button>
+      <a class="side__item" href="/simple">Simple chat</a>
+    </div>
+  </aside>
+
+  <!-- conversation -->
+  <main class="main" id="main">
+    <header class="bar">
+      <button class="icon-btn only-small" id="toggle-side" type="button" aria-label="Show chats"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <button class="folder" id="folder" type="button" title="Project folder: the agent works here. Click to change.">
+        <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.5a2 2 0 0 1 2-2h3.8l2 2h7.2a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></svg><span class="folder__label">Project</span><span class="folder__path" id="folder-path">…</span>
+      </button>
+      <button class="icon-btn icon-btn--show" id="new-chat-top" type="button" title="New chat in this folder (Ctrl K)" aria-label="New chat in this folder"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13"/></svg></button>
+      <span class="ctx" id="ctx" title="How full the model's working memory is for this chat"><i id="ctx-bar"></i><span id="ctx-text">0%</span></span>
+      <button class="icon-btn" id="toggle-panel" type="button" title="Tasks, files, changes and preview" aria-label="Side panel"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M14.5 4.5v15"/></svg></button>
+    </header>
+
+    <section class="log" id="log" aria-live="polite"></section>
+
+    <template id="empty-tpl">
+      <div class="empty">
+        <h1>What should we build?</h1>
+        <p>Zorlo plans, writes code, edits files, runs commands, searches the web and previews websites, inside the project folder you choose. It asks before anything you haven't allowed in Settings.</p>
+        <div class="ideas">
+          <button type="button" data-idea="Make a one-page website for a coffee shop called Ember Beans, with a menu and opening hours. Put it in a folder called ember-site and show me the preview."><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.5 3.5 5.3 3.5 8.5s-1.1 6-3.5 8.5c-2.4-2.5-3.5-5.3-3.5-8.5s1.1-6 3.5-8.5z"/></svg><b>Build a small website</b><span>A one-page site with live preview</span></button>
+          <button type="button" data-idea="/plan Look through my project folder and propose how to organise it better."><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.5h10.5M9 12h10.5M9 17.5h10.5"/><circle cx="5" cy="6.5" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="17.5" r="1"/></svg><b>Plan before changing anything</b><span>Look around, propose steps, change nothing</span></button>
+          <button type="button" data-idea="Write a Python script that counts words in every .txt file in this folder, create two test files, then run it."><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M7.5 9.5l3 2.5-3 2.5M12.5 15h4"/></svg><b>Write and run a script</b><span>Code, test files and a real run</span></button>
+          <button type="button" data-idea="Search the web for the latest stable version of Node.js and summarise what changed."><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg><b>Research on the web</b><span>Search, read pages, summarise</span></button>
+        </div>
+      </div>
+    </template>
+
+    <form class="composer" id="composer">
+      <div class="drop" id="drop">Drop files to attach</div>
+      <div class="box" id="box">
+      <div class="attachments" id="attachments"></div>
+      <div class="popup" id="popup" role="listbox" hidden></div>
+      <textarea id="input" rows="1" placeholder="Ask Zorlo to build, fix or find something…"></textarea>
+      <div class="composer__row">
+        <button class="icon-btn icon-btn--show" id="attach" type="button" title="Attach files" aria-label="Attach files"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5l-7.6 7.6a5 5 0 0 1-7.1-7.1l8.1-8.1a3.3 3.3 0 0 1 4.7 4.7l-8.1 8.1a1.7 1.7 0 0 1-2.4-2.4l7.4-7.4"/></svg></button>
+        <input type="file" id="file-input" multiple hidden>
+        <div class="seg" id="mode-seg" role="radiogroup" aria-label="Mode">
+          <button type="button" data-mode="chat" title="Just talk: no tools">Chat</button>
+          <button type="button" data-mode="plan" title="Look around and propose a plan; changes nothing">Plan</button>
+          <button type="button" data-mode="agent" title="Do the work: files, commands, web">Agent</button>
+        </div>
+        <label class="switch" title="Let the model think step by step first (slower, sometimes better)"><input type="checkbox" id="thinking"><span>Think</span></label>
+        <select id="speed" title="Speed mode">
+          <option value="exact">Exact</option>
+          <option value="balanced">Balanced</option>
+          <option value="fast">Fast</option>
+        </select>
+        <button class="model-badge" id="model-badge" type="button" hidden></button>
+        <span class="status" id="status">Loading…</span>
+        <button class="round round--stop" id="stop" type="button" title="Stop" aria-label="Stop" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="7.5" y="7.5" width="9" height="9" rx="2" fill="currentColor" stroke="none"/></svg></button>
+        <button class="round" id="send" type="submit" title="Send (Enter)" aria-label="Send"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5.5M6 11.5l6-6 6 6"/></svg></button>
+      </div>
+      </div>
+      <p class="composer__hint" id="composer-hint"><kbd>Enter</kbd> send · <kbd>Shift</kbd>+<kbd>Enter</kbd> new line · <kbd>@</kbd> file · <kbd>/</kbd> commands</p>
+    </form>
+  </main>
+
+  <!-- side panel -->
+  <aside class="panel" id="panel" hidden>
+    <div class="tabs" role="tablist">
+      <button type="button" data-tab="tasks" role="tab">Tasks</button>
+      <button type="button" data-tab="files" role="tab">Files</button>
+      <button type="button" data-tab="changes" role="tab">Changes <b id="changes-count"></b></button>
+      <button type="button" data-tab="preview" role="tab">Preview</button>
+      <button class="icon-btn icon-btn--show" id="close-panel" type="button" aria-label="Close panel"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button>
+    </div>
+    <div class="tab" data-pane="tasks"><div id="tasks"></div></div>
+    <div class="tab" data-pane="files">
+      <div class="row"><input class="search" id="file-filter" type="search" placeholder="Filter files"><button class="btn btn--ghost btn--sm" id="files-refresh" type="button">Refresh</button></div>
+      <div class="files" id="files"></div>
+    </div>
+    <div class="tab" data-pane="changes">
+      <div class="row"><span class="hint" id="changes-hint">Files the agent changed in this chat.</span><button class="btn btn--ghost btn--sm" id="undo-all" type="button">Undo all</button></div>
+      <div id="changes"></div>
+    </div>
+    <div class="tab tab--preview" data-pane="preview">
+      <div class="row">
+        <input class="search mono" id="preview-url" type="text" spellcheck="false" placeholder="Preview address">
+        <button class="btn btn--ghost btn--sm" id="preview-reload" type="button" title="Reload">&#8635;</button>
+        <button class="btn btn--ghost btn--sm" id="preview-width" type="button" title="Phone / desktop width">Phone</button>
+        <a class="btn btn--ghost btn--sm" id="preview-open" target="_blank" rel="noopener" title="Open in a browser tab">&#8599;</a>
+      </div>
+      <div class="frame-wrap" id="frame-wrap"><iframe id="preview-frame" title="Website preview" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-same-origin"></iframe><p class="hint" id="preview-empty">When the agent builds a web page, it appears here.</p></div>
+    </div>
+  </aside>
+</div>
+
+<!-- file viewer -->
+<dialog class="viewer" id="viewer">
+  <header class="viewer__head"><b class="mono" id="viewer-path"></b>
+    <button class="btn btn--ghost btn--sm" id="viewer-mention" type="button">Add to message</button>
+    <button class="btn btn--ghost btn--sm" id="viewer-preview" type="button" hidden>Preview</button>
+    <button class="icon-btn" id="viewer-close" type="button" aria-label="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button></header>
+  <pre class="viewer__body" id="viewer-body"></pre>
+</dialog>
+
+<!-- settings -->
+<dialog class="settings" id="settings">
+  <form method="dialog" class="settings__form">
+    <header class="settings__head"><h2>Settings</h2><button class="icon-btn" value="cancel" aria-label="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button></header>
+    <div class="settings__body">
+      <section>
+        <h3>Model</h3>
+        <p class="hint">Zorlo's own model runs on this PC. You can also use the agent, with all its tools, on a model from another provider with your own API key. Conversations are then sent to that provider.</p>
+        <div class="row"><label for="p-kind" class="lbl">Provider</label><select id="p-kind" class="wide"></select></div>
+        <div class="p-remote" id="p-remote">
+          <div class="row"><label for="p-base" class="lbl">Address</label><input id="p-base" type="text" spellcheck="false" placeholder="https://api.example.com/v1"></div>
+          <div class="row"><label for="p-key" class="lbl">API key</label><input id="p-key" type="password" autocomplete="off" spellcheck="false"><a class="btn btn--ghost btn--sm" id="p-getkey" target="_blank" rel="noopener" hidden>Get a key</a></div>
+          <div class="row"><label for="p-model" class="lbl">Model</label><input id="p-model" type="text" spellcheck="false" list="p-models"><datalist id="p-models"></datalist><button class="btn btn--ghost btn--sm" id="p-load" type="button">List models</button></div>
+          <div class="row"><label for="p-ctx" class="lbl">Context</label><input id="p-ctx" type="number" class="num" min="4096" step="1024"><span class="hint">tokens the model can read at once</span></div>
+          <p class="hint" id="p-msg"></p>
+        </div>
+      </section>
+      <section>
+        <h3>Project folder of this chat</h3>
+        <p class="hint">The agent reads and writes files here and runs commands in it. Each chat keeps its own folder; chats are grouped by folder on the left. Going outside it always needs your OK unless Full permission is on.</p>
+        <div class="row"><input id="s-workspace" type="text" spellcheck="false"><button class="btn btn--ghost" id="s-pick" type="button">Choose…</button></div>
+        <p class="hint" id="s-instructions"></p>
+      </section>
+      <section>
+        <h3>Permissions</h3>
+        <label class="check danger"><input type="checkbox" id="s-full"> <span><b>Full permission</b>: the agent does everything without asking (except what you set to Block). Only turn this on if you trust what you ask it to do.</span></label>
+        <table class="perms">
+          <tr><td>Read and search files</td><td><select data-perm="read"></select></td></tr>
+          <tr><td>Create and edit files</td><td><select data-perm="write"></select></td></tr>
+          <tr><td>Run terminal commands</td><td><select data-perm="command"></select></td></tr>
+          <tr><td>Search the web, open pages</td><td><select data-perm="web"></select></td></tr>
+          <tr><td>Use connectors (MCP)</td><td><select data-perm="mcp"></select></td></tr>
+          <tr><td>Add connectors and skills from a chat</td><td><select data-perm="setup"></select></td></tr>
+        </table>
+      </section>
+      <section>
+        <h3>Web search</h3>
+        <p class="hint">Works without setup (DuckDuckGo). For reliable results add a free <a href="https://brave.com/search/api/" target="_blank" rel="noopener">Brave Search API</a> key.</p>
+        <input id="s-brave" type="password" placeholder="Brave Search API key (optional)" autocomplete="off" spellcheck="false">
+      </section>
+      <section>
+        <div class="sec-head"><h3>Connectors (MCP)</h3><button class="btn btn--sm" id="s-browse-mcp" type="button">Browse connectors</button></div>
+        <p class="hint">Each connector gives the agent more tools: GitHub, Notion, a real browser, databases and more. Add as many as you like, or ask in a chat.</p>
+        <div class="conns" id="s-mcp-list"></div>
+        <details class="adv"><summary>Edit as JSON</summary>
+          <p class="hint">Same format as Claude Desktop's <code>claude_desktop_config.json</code>. Applying restarts every connector.</p>
+          <textarea id="s-mcp" rows="7" spellcheck="false"></textarea>
+          <div class="row" style="margin-top:8px"><button class="btn btn--ghost btn--sm" id="s-mcp-apply" type="button">Apply JSON</button></div>
+        </details>
+      </section>
+      <section>
+        <div class="sec-head"><h3>Skills</h3><button class="btn btn--sm" id="s-browse-skills" type="button">Browse skills</button></div>
+        <p class="hint">A skill is a folder of instructions (a <code>SKILL.md</code>) for one kind of task. The agent sees their names and loads one when a task needs it.</p>
+        <div class="conns" id="s-skill-list"></div>
+        <details class="adv"><summary>Skills folder</summary><input id="s-skills" type="text" spellcheck="false"></details>
+      </section>
+      <section>
+        <h3>Agent</h3>
+        <div class="row"><label for="s-steps">Most steps per request</label><input id="s-steps" type="number" min="1" max="200" class="num"></div>
+      </section>
+      <p class="hint" id="s-file"></p>
+      <p class="error" id="s-error"></p>
+    </div>
+    <footer class="settings__foot">
+      <button class="btn btn--ghost" value="cancel">Cancel</button>
+      <button class="btn" id="s-save" value="default">Save</button>
+    </footer>
+  </form>
+</dialog>
+
+<!-- an attached picture, larger -->
+<dialog class="zoom" id="zoom">
+  <form method="dialog"><button class="icon-btn" aria-label="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button></form>
+  <img id="zoom-img" alt=""><p class="mono" id="zoom-name"></p>
+</dialog>
+
+<!-- connector and skill markets -->
+<dialog class="market" id="market">
+  <header class="settings__head">
+    <div class="m-tabs seg" role="tablist"><button type="button" data-mtab="connectors">Connectors</button><button type="button" data-mtab="skills">Skills</button></div>
+    <input class="search" id="m-search" type="search" placeholder="Search">
+    <button class="icon-btn" id="m-close" type="button" aria-label="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button>
+  </header>
+  <div class="m-body" id="m-body"></div>
+</dialog>
+</body>
+</html>

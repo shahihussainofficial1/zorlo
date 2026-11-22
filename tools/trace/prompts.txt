@@ -1,0 +1,40 @@
+Write a Python function that merges overlapping intervals, with a short explanation and two test cases.
+
+Explain how a refrigerator works to a ten-year-old.
+
+A train leaves at 9:40 and travels 213 km at an average of 71 km/h. When does it arrive? Show your steps.
+
+Write a short, warm email declining a job offer while keeping the door open for the future.
+
+What were the main causes of the fall of the Western Roman Empire? Give a balanced summary.
+
+Fix the bug in this JavaScript and explain it:
+function sum(arr) { let total; for (let i = 0; i <= arr.length; i++) total += arr[i]; return total; }
+
+Translate into French and Spanish: "The library opens at eight, but the reading room is closed on Sundays."
+
+Write a haiku sequence of three poems about monsoon rain in a big city.
+
+Compare SQL and NoSQL databases for a small e-commerce startup. Recommend one and justify it.
+
+Prove that the square root of 2 is irrational.
+
+Give me a 5-day beginner workout plan that needs no equipment.
+
+Write a SQL query that returns the top 3 customers by total order value in 2025 from tables customers(id, name) and orders(id, customer_id, amount, created_at).
+
+Summarize the plot of Romeo and Juliet in five sentences, then name two themes.
+
+Explain the difference between TCP and UDP, with one real-world use case for each.
+
+Write a C function that reverses a singly linked list in place.
+
+I have chicken, rice, onions, garlic, yogurt and some spices. Suggest a dinner recipe with steps.
+
+What is the derivative of x^3 * sin(x)? Then evaluate it at x = pi.
+
+Draft a product description for a solar-powered phone charger aimed at hikers.
+
+Explain what a Mixture-of-Experts language model is and why it can be cheaper to run than a dense model.
+
+Write a bash script that finds the 10 largest files under a directory and prints their sizes in human-readable form.

@@ -1,0 +1,7 @@
+build/
+.bench/
+models/
+*.npy
+__pycache__/
+build-dl/
+third_party/webview2/

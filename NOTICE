@@ -1,0 +1,13 @@
+Zorlo
+Copyright 2026 Haider Md. Faiyaz Hussain Shahi
+
+This product includes third-party software, each under its own license:
+  - llama.cpp and ggml (MIT), https://github.com/ggml-org/llama.cpp
+      including llamafile sgemm (MIT, Copyright 2024 Mozilla Foundation) and the
+      YaRN rotary embedding (MIT, Copyright 2023 Jeffrey Quesnelle and Bowen Peng)
+  - cpp-httplib (MIT) and nlohmann/json (MIT), vendored in llama.cpp
+  - sheredom/subprocess.h and base64.hpp (Unlicense, public domain)
+  - Microsoft Edge WebView2 SDK loader (BSD-3-Clause), linked into Zorlo Desktop on Windows
+
+"Zorlo" and the Zorlo logo identify this project. The Apache License does not grant
+permission to use them (section 6), except to describe where the work comes from.
