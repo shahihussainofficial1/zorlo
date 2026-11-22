@@ -6,8 +6,9 @@
 ![Platform: Windows x64](https://img.shields.io/badge/platform-Windows%20x64-lightgrey)
 ![Language: C++17](https://img.shields.io/badge/language-C%2B%2B17-informational)
 
-[Website](https://zorlo.stream) · [Download](https://zorlo.stream/download/zorlo-v0.1-windows-x64.zip) ·
-[Models](https://huggingface.co/Haidershahi1) · [Design and benchmarks](docs/design.md) · [Usage](docs/usage.md)
+[Website](https://zorlo.stream) · [Download](https://github.com/shahihussainofficial1/zorlo/releases/latest) ·
+[Models](https://huggingface.co/Haidershahi1) · [Technical report](https://doi.org/10.5281/zenodo.24136832) ·
+[Design and benchmarks](docs/design.md) · [Usage](docs/usage.md)
 
 A 30B model doesn't fit in 8 GB of RAM, but a Mixture-of-Experts model only uses a small part of
 its weights for each token. Zorlo keeps the always-needed part (attention, norms, routers, output head) in
@@ -16,6 +17,8 @@ sized to the RAM the machine has free right now.
 
 The output is **identical to llama.cpp**, token for token and logit for logit on greedy decoding. The
 lossy speed-ups are opt-in, and their quality cost is measured.
+
+![Zorlo Desktop in Agent mode with Qwen3-30B-A3B: it wrote a one-page website with the user's approval and shows it in the Preview panel](docs/images/zorlo-agent.webp)
 
 ## Results
 
@@ -55,7 +58,7 @@ what was tried and dropped, are in [docs/design.md](docs/design.md).
 
 ### Windows app
 
-1. Download [zorlo-v0.1-windows-x64.zip](https://zorlo.stream/download/zorlo-v0.1-windows-x64.zip) and unzip it.
+1. Download `zorlo-v0.1-windows-x64.zip` from [Releases](https://github.com/shahihussainofficial1/zorlo/releases/latest) and unzip it.
 2. Run **Zorlo Desktop.exe**, pick a model, and wait for the download.
 3. Chat, or switch to Agent mode and give it a project folder.
 
