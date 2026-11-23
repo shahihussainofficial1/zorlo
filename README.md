@@ -153,14 +153,19 @@ Models keep their own licenses (Qwen3 is Apache 2.0).
 
 ## Citation
 
-If you use Zorlo in research, please cite it:
+If you use Zorlo in research, please cite the technical report
+([doi:10.5281/zenodo.24136832](https://doi.org/10.5281/zenodo.24136832)):
 
 ```bibtex
-@software{shahi_zorlo_2026,
-  author = {Shahi, Haider Md. Faiyaz Hussain},
-  title  = {Zorlo: Streaming Mixture-of-Experts Inference on Low-Memory CPUs},
-  year   = {2026},
-  url    = {https://zorlo.stream}
+@techreport{shahi_zorlo_2026,
+  author      = {Shahi, Haider Md. Faiyaz Hussain},
+  title       = {Zorlo: Running Large Mixture-of-Experts Models on Low-RAM PCs
+                 by Streaming Experts from the SSD},
+  institution = {Zenodo},
+  year        = {2026},
+  month       = nov,
+  doi         = {10.5281/zenodo.24136832},
+  url         = {https://doi.org/10.5281/zenodo.24136832}
 }
 ```
 

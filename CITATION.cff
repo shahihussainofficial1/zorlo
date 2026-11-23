@@ -1,17 +1,37 @@
 cff-version: 1.2.0
-message: "If you use Zorlo in your work, please cite it as below."
-title: "Zorlo: Streaming Mixture-of-Experts Inference on Low-Memory CPUs"
+message: "If you use Zorlo in your work, please cite the technical report below."
+title: "Zorlo"
+abstract: "Zorlo runs large Mixture-of-Experts language models on CPU-only PCs with 4-8 GB of RAM by streaming experts from the SSD into a RAM-budgeted cache, with output identical to llama.cpp by default."
 type: software
 authors:
   - family-names: Shahi
     given-names: Haider Md. Faiyaz Hussain
+    orcid: "https://orcid.org/0009-0004-0940-9096"
 version: "0.1"
 date-released: 2026-11-22
 license: Apache-2.0
+repository-code: "https://github.com/shahihussainofficial1/zorlo"
 url: "https://zorlo.stream"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24136832
+    description: "Technical report on Zenodo (always resolves to the latest version)"
 keywords:
   - mixture-of-experts
   - llm-inference
   - cpu
   - low-memory
   - ssd-streaming
+preferred-citation:
+  type: report
+  title: "Zorlo: Running Large Mixture-of-Experts Models on Low-RAM PCs by Streaming Experts from the SSD"
+  authors:
+    - family-names: Shahi
+      given-names: Haider Md. Faiyaz Hussain
+      orcid: "https://orcid.org/0009-0004-0940-9096"
+  year: 2026
+  month: 11
+  publisher:
+    name: Zenodo
+  doi: 10.5281/zenodo.24136832
+  url: "https://doi.org/10.5281/zenodo.24136832"
